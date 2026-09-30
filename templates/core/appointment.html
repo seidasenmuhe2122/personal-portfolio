@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block title %}Appointment · {{ site.site_name|default:'Seid Digital' }}{% endblock %}
+{% block content %}
+<section class="page-head"><span class="eyebrow">BOOKING / DISCOVERY</span><h1>Request an appointment.</h1><p>Choose a future time and add the topic you want to discuss. Confirmation can be handled from the Command Center.</p></section>
+<section class="section contact-layout">
+  <div class="contact-card"><form class="form" method="post">{% csrf_token %}{% for field in form %}<div class="field-wrap">{{ field }}{% if field.errors %}<div class="field-error">{{ field.errors|striptags }}</div>{% endif %}</div>{% endfor %}<button class="btn primary" type="submit">Request appointment ↗</button></form></div>
+  <aside class="contact-aside"><span class="eyebrow">SESSION</span><h3>Focused, practical and outcome-driven.</h3><p class="muted">Use this for portfolio reviews, digital-product ideas, automation planning, technical discussions or collaboration.</p></aside>
+</section>
+{% endblock %}

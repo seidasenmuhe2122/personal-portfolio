@@ -1,0 +1,34 @@
+services:
+  - type: web
+    name: seid-digital-platform
+    runtime: python
+    buildCommand: ./build.sh
+    startCommand: gunicorn config.wsgi:application
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.13.5
+      - key: DJANGO_SECRET_KEY
+        generateValue: true
+      - key: DEBUG
+        value: "False"
+      - key: DJANGO_ENV
+        value: production
+      - key: SECURE_SSL_REDIRECT
+        value: "True"
+      - key: SECURE_HSTS_SECONDS
+        value: "31536000"
+      - key: ADMIN_URL_PATH
+        generateValue: true
+      - key: DATABASE_URL
+        fromDatabase:
+          name: seid-digital-db
+          property: connectionString
+  - type: cron
+    name: seid-digital-scheduler
+    runtime: python
+    schedule: "*/15 * * * *"
+    buildCommand: pip install -r requirements.txt
+    startCommand: python manage.py publish_scheduled
+databases:
+  - name: seid-digital-db
+    plan: free

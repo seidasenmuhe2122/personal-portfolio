@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block title %}Maintenance · {{ site.site_name|default:'Seid Digital' }}{% endblock %}
+{% block content %}
+<section class="maintenance-screen">
+  <div class="maintenance-orb"></div>
+  <span class="eyebrow">SYSTEM MAINTENANCE</span>
+  <h1>Something better is being prepared.</h1>
+  <p>{{ site.maintenance_message|default:'We are upgrading the platform. Please check back soon.' }}</p>
+  <a class="btn primary" href="mailto:{{ site.email|default:'website@example.com' }}">Contact directly ↗</a>
+</section>
+{% endblock %}

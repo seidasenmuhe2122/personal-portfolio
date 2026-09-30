@@ -1,0 +1,53 @@
+{% extends "admin/base_site.html" %}
+{% load i18n static %}
+{% block content %}
+<div class="cc-dashboard">
+  <div class="cc-hero">
+    <div>
+      <span class="cc-eyebrow">DIGITAL PLATFORM / CONTROL CENTER</span>
+      <h1>Good to see you.</h1>
+      <p>Manage your identity, portfolio, content, automation, AI, integrations and audience from one secure workspace.</p>
+    </div>
+    <div class="cc-hero-actions">
+      <a class="cc-btn cc-primary" href="/" target="_blank">Open website ↗</a>
+      <a class="cc-btn" href="{% url 'admin:core_sitesettings_changelist' %}">Website settings</a>
+    </div>
+  </div>
+
+  <div class="cc-stats">
+    <a class="cc-stat" href="{% url 'admin:core_project_changelist' %}"><span>Projects</span><strong>{{ dashboard_stats.projects }}</strong><small>Portfolio work</small></a>
+    <a class="cc-stat" href="{% url 'admin:core_post_changelist' %}"><span>Content</span><strong>{{ dashboard_stats.posts }}</strong><small>{{ dashboard_stats.scheduled }} scheduled</small></a>
+    <a class="cc-stat" href="{% url 'admin:core_contactmessage_changelist' %}"><span>Messages</span><strong>{{ dashboard_stats.messages }}</strong><small>Inbox</small></a>
+    <a class="cc-stat" href="{% url 'admin:core_appointment_changelist' %}"><span>Appointments</span><strong>{{ dashboard_stats.appointments }}</strong><small>Requests</small></a>
+    <a class="cc-stat" href="{% url 'admin:core_certificate_changelist' %}"><span>Certificates</span><strong>{{ dashboard_stats.certificates }}</strong><small>Credentials</small></a>
+    <a class="cc-stat" href="{% url 'admin:core_aiconversation_changelist' %}"><span>AI questions</span><strong>{{ dashboard_stats.ai_questions }}</strong><small>Assistant activity</small></a>
+    <a class="cc-stat" href="{% url 'admin:core_analyticsevent_changelist' %}"><span>Page views</span><strong>{{ dashboard_stats.pageviews }}</strong><small>Tracked events</small></a>
+    <a class="cc-stat" href="{% url 'admin:core_newslettersubscriber_changelist' %}"><span>Subscribers</span><strong>{{ dashboard_stats.subscribers }}</strong><small>Active newsletter</small></a>
+  </div>
+
+  <div class="cc-columns">
+    <section class="cc-panel">
+      <div class="cc-panel-head"><div><span class="cc-eyebrow">INBOX</span><h2>Recent messages</h2></div><a href="{% url 'admin:core_contactmessage_changelist' %}">View all →</a></div>
+      {% for m in recent_messages %}
+      <a class="cc-row" href="{% url 'admin:core_contactmessage_change' m.pk %}"><span class="cc-avatar">{{ m.name|first|upper }}</span><span><b>{{ m.name }}</b><small>{{ m.subject }}</small></span><time>{{ m.created_at|date:"M d" }}</time></a>
+      {% empty %}<div class="cc-empty">No messages yet.</div>{% endfor %}
+    </section>
+
+    <section class="cc-panel">
+      <div class="cc-panel-head"><div><span class="cc-eyebrow">SCHEDULE</span><h2>Upcoming</h2></div><a href="{% url 'admin:core_appointment_changelist' %}">Calendar →</a></div>
+      {% for a in upcoming_appointments %}
+      <a class="cc-row" href="{% url 'admin:core_appointment_change' a.pk %}"><span class="cc-date">{{ a.date|date:"d" }}<small>{{ a.date|date:"M" }}</small></span><span><b>{{ a.name }}</b><small>{{ a.topic }}</small></span><time>{{ a.date|date:"H:i" }}</time></a>
+      {% empty %}<div class="cc-empty">No upcoming appointments.</div>{% endfor %}
+    </section>
+  </div>
+
+  <section class="cc-panel cc-modules">
+    <div class="cc-panel-head"><div><span class="cc-eyebrow">WORKSPACE</span><h2>All controls</h2></div></div>
+    <div class="cc-module-grid">
+      {% for app in app_list %}
+      <div class="cc-module"><div class="cc-module-title">{{ app.name }}</div>{% for model in app.models %}<a href="{{ model.admin_url }}">{{ model.name }} <span>→</span></a>{% endfor %}</div>
+      {% endfor %}
+    </div>
+  </section>
+</div>
+{% endblock %}

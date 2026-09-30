@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block content %}
+{% for section in sections %}{% include section.template_name %}{% if section.section_type == 'hero' %}{% include 'core/sections/practice_areas.html' %}{% endif %}{% empty %}
+{% include 'core/sections/hero.html' %}
+{% include 'core/sections/practice_areas.html' %}
+{% include 'core/sections/about.html' %}
+{% include 'core/sections/projects.html' %}
+{% include 'core/sections/services.html' %}
+{% include 'core/sections/experience.html' %}
+{% include 'core/sections/skills.html' %}
+{% include 'core/sections/certificates.html' %}
+{% include 'core/sections/posts.html' %}
+{% include 'core/sections/testimonials.html' %}
+{% include 'core/sections/contact.html' %}
+{% endfor %}
+{% endblock %}

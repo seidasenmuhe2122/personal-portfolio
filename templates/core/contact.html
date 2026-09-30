@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block title %}Contact · {{ site.site_name|default:'Seid Digital' }}{% endblock %}
+{% block content %}
+<section class="page-head page-head-split"><div><span class="eyebrow">CONTACT / CONNECT</span><h1>Let's build something useful.</h1><p>Tell me what you are trying to solve. I will turn the idea into a clear next step.</p></div><div class="contact-orbit"><span>HELLO</span>{% if site.contact_orbit_image %}<img src="{{ site.contact_orbit_image.url }}" alt="{{ site.site_name }} mark">{% else %}<b>{{ site.contact_orbit_mark|default:'S' }}</b>{% endif %}</div></section>
+<section class="section contact-layout">
+  <div class="contact-card"><span class="eyebrow">DIRECT MESSAGE</span><h2>Start the conversation.</h2>
+    <form class="form" method="post">{% csrf_token %}
+      {% for field in form %}<div class="field-wrap">{{ field }}{% if field.errors %}<div class="field-error">{{ field.errors|striptags }}</div>{% endif %}</div>{% endfor %}
+      <button class="btn primary" type="submit">Send message <span>↗</span></button>
+    </form>
+  </div>
+  <aside class="contact-aside"><span class="eyebrow">AVAILABILITY</span><h3>{{ profile.availability|default:'Open for selected digital projects' }}</h3><p class="muted">Cybersecurity, web platforms, automation, AI workflows and technology projects.</p><div class="contact-facts">{% if site.email %}<a href="mailto:{{ site.email }}">{{ site.email }}</a>{% endif %}{% if site.location %}<span>{{ site.location }}</span>{% endif %}</div></aside>
+</section>
+{% endblock %}

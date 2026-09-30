@@ -1,0 +1,1 @@
+{% load xss %}{% if section.content %}<section class="section custom-section"><div class="section-head"><span class="eyebrow">CUSTOM SECTION</span><h2>{{ section.title }}</h2><p class="muted">{{ section.subtitle }}</p></div><div class="content">{{ section.content|sanitized_html }}</div></section>{% endif %}

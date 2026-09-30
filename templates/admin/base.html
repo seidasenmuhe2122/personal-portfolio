@@ -1,0 +1,6 @@
+{% extends "admin/base.html" %}
+{% load static %}
+{% block title %}{{ title }} · SEID DIGITAL COMMAND CENTER{% endblock %}
+{% block extrastyle %}{{ block.super }}<link rel="stylesheet" href="{% static 'admin/command-center.css' %}">{% endblock %}
+{% block branding %}<a href="{% url 'admin:index' %}" class="cc-brand"><span class="cc-logo">S</span><span><b>SEID DIGITAL</b><small>COMMAND CENTER</small></span></a>{% endblock %}
+{% block nav-global %}<div class="cc-top-links"><a href="/" target="_blank" rel="noopener">View website ↗</a><a href="{% url 'admin:logout' %}">Sign out</a></div>{% endblock %}

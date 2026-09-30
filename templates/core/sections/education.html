@@ -1,0 +1,1 @@
+{% if education %}<section class="section"><div class="section-head"><span class="eyebrow">EDUCATION</span><h2>Learning with purpose.</h2></div><div class="grid">{% for e in education %}<article class="card"><span class="card-tag">{{ e.institution }}</span><h3>{{ e.degree }}</h3><p>{{ e.field }}</p><p>{{ e.description }}</p></article>{% endfor %}</div></section>{% endif %}

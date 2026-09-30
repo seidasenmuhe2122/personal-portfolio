@@ -1,0 +1,51 @@
+{% load static %}<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>{% block title %}{{ site.meta_title|default:site.site_name|default:'Seid Digital Platform' }}{% endblock %}</title>
+<meta name="description" content="{{ site.meta_description|default:'Technology, cybersecurity, AI, automation and management.' }}">
+<meta name="keywords" content="{{ site.meta_keywords|default:'technology, cybersecurity, AI, automation, portfolio' }}">
+<meta name="theme-color" content="{{ site.primary_color|default:'#7c5cff' }}">
+{% if site.favicon %}<link rel="icon" href="{{ site.favicon.url }}">{% else %}<link rel="icon" href="{% static 'img/favicon.svg' %}" type="image/svg+xml">{% endif %}
+<link rel="canonical" href="{{ request.build_absolute_uri }}">
+<meta property="og:title" content="{% block og_title %}{{ site.meta_title|default:site.site_name|default:'Seid Digital Platform' }}{% endblock %}">
+<meta property="og:description" content="{{ site.meta_description|default:'Technology, cybersecurity, AI, automation and management.' }}">
+<meta property="og:type" content="website">
+<meta property="og:url" content="{{ request.build_absolute_uri }}">
+{% if site.og_image %}<meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{{ site.og_image.url }}">{% endif %}
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+<div class="noise"></div>
+<header class="nav">
+  <a class="brand" href="{% url 'home' %}"><span class="brand-mark">S</span><span><b>{{ site.site_name|default:'SEID DIGITAL' }}</b><small>TECH · SECURITY · AI</small></span></a>
+  <nav class="desktop-nav">
+    <a href="{% url 'home' %}">Home</a><a href="{% url 'about' %}">About</a><a href="{% url 'projects' %}">Projects</a><a href="{% url 'services' %}">Services</a>{% if site.blog_enabled|default:True %}<a href="{% url 'blog' %}">Blog</a>{% endif %}<a href="{% url 'contact' %}">Contact</a>
+    {% for p in menu_pages %}<a href="{% url 'page' p.slug %}">{{ p.title }}</a>{% endfor %}
+  </nav>
+  <div class="nav-actions"><button class="icon-btn" data-action="toggle-theme" aria-label="Toggle theme">◐</button><button class="icon-btn menu-btn" data-action="toggle-menu" aria-label="Open menu">☰</button></div>
+</header>
+<div id="mobile-menu" class="mobile-menu"><a href="{% url 'home' %}">Home</a><a href="{% url 'about' %}">About</a><a href="{% url 'projects' %}">Projects</a><a href="{% url 'services' %}">Services</a><a href="{% url 'blog' %}">Blog</a><a href="{% url 'appointment' %}">Book</a><a href="{% url 'contact' %}">Contact</a>{% for p in menu_pages %}<a href="{% url 'page' p.slug %}">{{ p.title }}</a>{% endfor %}</div>
+<main>
+{% if messages %}<div class="messages" aria-live="polite">{% for message in messages %}<div class="message">{{ message }}</div>{% endfor %}</div>{% endif %}
+{% block content %}{% endblock %}
+</main>
+<footer class="footer">
+  <div class="footer-main"><div><div class="brand footer-brand"><span class="brand-mark">S</span><span><b>{{ site.site_name|default:'SEID DIGITAL' }}</b><small>BUILD · SECURE · AUTOMATE</small></span></div><p>{{ site.footer_text|default:'Building secure, intelligent and useful digital experiences.' }}</p></div>
+  <div class="socials">
+  {% for s in social_links %}<a class="social" href="{{ s.url }}" target="_blank" rel="noopener noreferrer" aria-label="{{ s.name }}" title="{{ s.name }}">
+    {% with n=s.name|lower %}{% if 'github' in n %}<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .8A11.2 11.2 0 0 0 8.46 22.6c.56.1.77-.24.77-.54v-2.1c-3.13.68-3.79-1.33-3.79-1.33-.51-1.3-1.25-1.64-1.25-1.64-1.02-.7.08-.69.08-.69 1.13.08 1.73 1.16 1.73 1.16 1 .1 1.93-.75 2.4-1.32.1-.7.39-1.18.7-1.45-2.5-.28-5.13-1.25-5.13-5.56 0-1.23.44-2.23 1.16-3.02-.12-.29-.5-1.43.11-2.98 0 0 .95-.3 3.1 1.15a10.7 10.7 0 0 1 5.64 0c2.15-1.45 3.1-1.15 3.1-1.15.61 1.55.23 2.69.11 2.98.72.79 1.16 1.79 1.16 3.02 0 4.32-2.64 5.27-5.16 5.55.4.35.75 1.05.75 2.12v3.14c0 .3.2.65.78.54A11.2 11.2 0 0 0 12 .8Z"/></svg>
+    {% elif 'linkedin' in n %}<svg viewBox="0 0 24 24"><path d="M5.1 7.1A1.9 1.9 0 1 0 5.1 3a1.9 1.9 0 0 0 0 4.1ZM3.5 21h3.2V9.3H3.5V21Zm5.2 0h3.2v-6.5c0-1.7.3-3.4 2.5-3.4 2.2 0 2.2 2 2.2 3.5V21h3.2v-7.1c0-3.5-.8-6.2-4.8-6.2-1.9 0-3.2 1-3.7 1.9h-.1V9.3H8.7V21Z"/></svg>
+    {% elif 'telegram' in n %}<svg viewBox="0 0 24 24"><path d="m21.7 3.6-3 16.1c-.2 1.1-.8 1.4-1.6.9l-4.5-3.3-2.2 2.1c-.2.2-.4.4-.8.4l.3-4.6 8.4-7.6c.4-.3-.1-.5-.6-.2L7.3 14 2.9 12.6c-1-.3-1-1 .2-1.5L20.3 4c.8-.3 1.5.2 1.4-.4Z"/></svg>
+    {% elif 'instagram' in n %}<svg viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.7" r="1" class="fill"/></svg>
+    {% elif 'youtube' in n %}<svg viewBox="0 0 24 24"><path d="M21.5 7.1a2.7 2.7 0 0 0-1.9-1.9C17.9 4.7 12 4.7 12 4.7s-5.9 0-7.6.5a2.7 2.7 0 0 0-1.9 1.9C2 8.8 2 12 2 12s0 3.2.5 4.9a2.7 2.7 0 0 0 1.9 1.9c1.7.5 7.6.5 7.6.5s5.9 0 7.6-.5a2.7 2.7 0 0 0 1.9-1.9c.5-1.7.5-4.9.5-4.9s0-3.2-.5-4.9ZM10 15.4V8.6l6 3.4-6 3.4Z"/></svg>
+    {% elif 'facebook' in n %}<svg viewBox="0 0 24 24"><path d="M13.6 21v-8h2.7l.4-3.1h-3.1v-2c0-.9.3-1.5 1.6-1.5h1.7V3.6c-.3 0-1.3-.1-2.5-.1-2.5 0-4.2 1.5-4.2 4.3v2.1H7.4V13h2.8v8h3.4Z"/></svg>
+    {% else %}<svg viewBox="0 0 24 24"><path d="M6 18 18 6M9 6h9v9"/></svg>{% endif %}{% endwith %}
+  </a>{% endfor %}</div></div>
+  {% if site.newsletter_enabled %}<div class="footer-newsletter"><div><span class="eyebrow">STAY IN THE LOOP</span><h3>Occasional ideas, launches and useful notes.</h3></div><form id="newsletter-form" class="newsletter-form">{% csrf_token %}<input name="email" type="email" placeholder="you@example.com" required><button class="btn primary" type="submit">Subscribe</button></form></div>{% endif %}
+  <div class="footer-bottom"><span>© {% now 'Y' %} {{ site.site_name|default:'Seid Digital' }}</span><span><a href="{% url 'legal' 'privacy-policy' %}">Privacy</a> · <a href="{% url 'legal' 'terms-of-service' %}">Terms</a> · <a href="{% url 'legal' 'cookie-policy' %}">Cookies</a></span></div>
+</footer>
+{% if site.ai_enabled|default:True %}<button class="ai-fab" data-action="toggle-ai" aria-label="Open AI assistant"><strong aria-hidden="true">S</strong></button>
+<div id="ai-panel" class="ai-panel" aria-hidden="true"><div class="ai-head"><div><b>SEID AI</b><small>Website assistant</small></div><button data-action="toggle-ai" aria-label="Close assistant">×</button></div><div id="ai-messages" class="ai-messages"><div class="ai-bubble bot">Hi! Ask me about the portfolio, projects, services or technology.</div></div><form id="ai-form" class="ai-form">{% csrf_token %}<input id="ai-input" name="message" maxlength="1200" placeholder="Ask something…" autocomplete="off"><button aria-label="Send">↑</button></form></div>{% endif %}
+<script src="{% static 'js/app.js' %}"></script>
+</body></html>

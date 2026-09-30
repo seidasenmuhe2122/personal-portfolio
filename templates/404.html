@@ -1,0 +1,3 @@
+{% extends 'base.html' %}
+{% block title %}Page not found · {{ site.site_name|default:'Seid Digital' }}{% endblock %}
+{% block content %}<section class="maintenance-screen"><span class="eyebrow">404 / NOT FOUND</span><h1>This page moved somewhere else.</h1><p>The address may be outdated or the page may not be published. Let's get you back to the platform.</p><a class="btn primary" href="{% url 'home' %}">Back home ↗</a></section>{% endblock %}
