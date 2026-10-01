@@ -38,12 +38,13 @@ def run_automation(event, data=None):
 
                 message = data.get("message", "")
 
+                # Do not allow email failure to break the website.
                 send_mail(
                     subject,
                     message,
                     settings.DEFAULT_FROM_EMAIL,
                     [recipient],
-                    fail_silently=False,
+                    fail_silently=True,
                 )
 
             elif rule.action == "log":
@@ -66,6 +67,7 @@ def run_automation(event, data=None):
             )
 
         except Exception as exc:
+            # Automation failure must never break the main website request.
             rule.last_error = str(exc)
             rule.save(update_fields=["last_error"])
 
@@ -73,3 +75,8 @@ def run_automation(event, data=None):
                 "Automation rule '%s' failed.",
                 rule.name,
             )
+
+            # Important:
+            # Do NOT re-raise the exception.
+            # The contact message should still be successfully processed.
+            continue
