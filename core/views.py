@@ -3,6 +3,7 @@ import json
 import logging
 import os
 from pathlib import Path
+from .automation import run_automation
 
 from django.conf import settings
 from django.contrib import messages
@@ -146,6 +147,24 @@ def contact(request):
         msg.ip_address = request.META.get("REMOTE_ADDR")
         msg.save()
 
+        run_automation(
+            "contact_created",
+            {
+                "recipient": getattr(
+                    settings,
+                    "ADMIN_NOTIFICATION_EMAIL",
+                    "",
+                ),
+                "subject": f"New Contact Message: {msg.subject}",
+                "message": (
+                    f"Name: {msg.name}\n"
+                    f"Email: {msg.email}\n"
+                    f"Subject: {msg.subject}\n\n"
+                    f"Message:\n{msg.message}"
+                ),
+            },
+        )
+
         AnalyticsEvent.objects.create(
             event_type="contact",
             path=request.path,
@@ -153,7 +172,11 @@ def contact(request):
         )
 
         try:
-            recipient = getattr(settings, "ADMIN_NOTIFICATION_EMAIL", "")
+            recipient = getattr(
+                settings,
+                "ADMIN_NOTIFICATION_EMAIL",
+                "",
+            )
 
             if recipient:
                 send_mail(
@@ -172,9 +195,14 @@ def contact(request):
                     },
                 )
         except Exception:
-            logger.exception("Failed to send contact notification email.")
+            logger.exception(
+                "Failed to send contact notification email."
+            )
 
-        messages.success(request, "Your message has been received. Thank you.")
+        messages.success(
+            request,
+            "Your message has been received. Thank you.",
+        )
         return redirect("contact")
 
     return render(
@@ -185,7 +213,6 @@ def contact(request):
             "profile": Profile.objects.first(),
         },
     )
-
 def appointment(request):
     form = AppointmentForm(request.POST or None)
     if request.method == "POST" and form.is_valid():
