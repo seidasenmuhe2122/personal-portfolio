@@ -140,21 +140,51 @@ def legal(request, slug):
 
 def contact(request):
     form = ContactForm(request.POST or None)
+
     if request.method == "POST" and form.is_valid():
         msg = form.save(commit=False)
         msg.ip_address = request.META.get("REMOTE_ADDR")
         msg.save()
-        AnalyticsEvent.objects.create(event_type="contact", path=request.path, session_key=request.session.session_key or "")
-        site = SiteSettings.objects.first()
+
+        AnalyticsEvent.objects.create(
+            event_type="contact",
+            path=request.path,
+            session_key=request.session.session_key or "",
+        )
+
         try:
-            if site and site.email:
-                send_mail(f"Contact: {msg.subject}", msg.message, settings.DEFAULT_FROM_EMAIL, [site.email], fail_silently=True)
+            recipient = getattr(settings, "ADMIN_NOTIFICATION_EMAIL", "")
+
+            if recipient:
+                send_mail(
+                    f"New Contact Message: {msg.subject}",
+                    (
+                        f"Name: {msg.name}\n"
+                        f"Email: {msg.email}\n"
+                        f"Subject: {msg.subject}\n\n"
+                        f"Message:\n{msg.message}"
+                    ),
+                    settings.DEFAULT_FROM_EMAIL,
+                    [recipient],
+                    fail_silently=False,
+                    headers={
+                        "Reply-To": msg.email,
+                    },
+                )
         except Exception:
-            pass
+            logger.exception("Failed to send contact notification email.")
+
         messages.success(request, "Your message has been received. Thank you.")
         return redirect("contact")
-    return render(request, "core/contact.html", {"form": form, "profile": Profile.objects.first()})
 
+    return render(
+        request,
+        "core/contact.html",
+        {
+            "form": form,
+            "profile": Profile.objects.first(),
+        },
+    )
 
 def appointment(request):
     form = AppointmentForm(request.POST or None)
