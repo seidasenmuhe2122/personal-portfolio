@@ -1,9 +1,6 @@
 import logging
-
 from django.conf import settings
-from django.core.mail import send_mail
 from django.utils import timezone
-
 from .models import AutomationRule
 
 logger = logging.getLogger(__name__)
@@ -20,31 +17,9 @@ def run_automation(event, data=None):
     for rule in rules:
         try:
             if rule.action == "send_email":
-                recipient = data.get("recipient") or getattr(
-                    settings,
-                    "ADMIN_NOTIFICATION_EMAIL",
-                    "",
-                )
-
-                if not recipient:
-                    raise ValueError(
-                        "ADMIN_NOTIFICATION_EMAIL is not configured."
-                    )
-
-                subject = data.get(
-                    "subject",
-                    f"Automation: {event}",
-                )
-
-                message = data.get("message", "")
-
-                # Do not allow email failure to break the website.
-                send_mail(
-                    subject,
-                    message,
-                    settings.DEFAULT_FROM_EMAIL,
-                    [recipient],
-                    fail_silently=True,
+                logger.info(
+                    "Email automation skipped to prevent SMTP blocking: %s",
+                    data,
                 )
 
             elif rule.action == "log":
@@ -62,21 +37,13 @@ def run_automation(event, data=None):
 
             rule.last_run = timezone.now()
             rule.last_error = ""
-            rule.save(
-                update_fields=["last_run", "last_error"]
-            )
+            rule.save(update_fields=["last_run", "last_error"])
 
         except Exception as exc:
-            # Automation failure must never break the main website request.
             rule.last_error = str(exc)
             rule.save(update_fields=["last_error"])
-
             logger.exception(
                 "Automation rule '%s' failed.",
                 rule.name,
             )
-
-            # Important:
-            # Do NOT re-raise the exception.
-            # The contact message should still be successfully processed.
             continue
